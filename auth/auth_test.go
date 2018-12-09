@@ -27,3 +27,39 @@ func Test_getAjaxToken(t *testing.T) {
 		t.Log("OK")
 	}
 }
+
+func Test_getOSAPIURL(t *testing.T) {
+	auth.getDMMTokens()
+	auth.getAjaxToken()
+	err := auth.getOSAPIURL()
+	if err != nil {
+		t.Error(err)
+	} else {
+		t.Log("OK")
+	}
+}
+
+func Test_getWorld(t *testing.T) {
+	auth.getDMMTokens()
+	auth.getAjaxToken()
+	auth.getOSAPIURL()
+	err := auth.getWorld()
+	if err != nil {
+		t.Error(err)
+	} else {
+		t.Log("OK")
+	}
+}
+
+func Test_getAPIToken(t *testing.T) {
+	auth.getDMMTokens()
+	auth.getAjaxToken()
+	auth.getOSAPIURL()
+	auth.getWorld()
+	err := auth.getAPIToken()
+	if err != nil {
+		t.Error(err)
+	} else {
+		t.Log("OK")
+	}
+}
