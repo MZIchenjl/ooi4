@@ -43,8 +43,13 @@ func main() {
 	}
 
 	go func() {
+		log.Printf("OOI serving on http://%s\n", srv.Addr)
 		if err := srv.ListenAndServe(); err != nil {
 			log.Println(err)
+			ctx, cancel := context.WithTimeout(context.Background(), wait)
+			srv.Shutdown(ctx)
+			cancel()
+			os.Exit(1)
 		}
 	}()
 
@@ -59,6 +64,6 @@ func main() {
 
 	srv.Shutdown(ctx)
 
-	log.Println("shutting down")
+	log.Println("OOI is shutting down")
 	os.Exit(0)
 }
