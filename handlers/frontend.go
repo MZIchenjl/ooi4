@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/MZIchenjl/ooi4/auth"
 	"github.com/MZIchenjl/ooi4/session"
 	"github.com/MZIchenjl/ooi4/template"
-	"net/http"
-	"strconv"
 )
 
 type FrontEndHandler struct {
@@ -140,6 +141,17 @@ func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
 			Token:     sess.APIToken,
 			StartTime: sess.APIStartTime,
 		})
+		return
+	} else {
+		clearCookie(w, self.CookieID())
+		http.Redirect(w, r, "/", http.StatusFound)
+	}
+}
+
+func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
+	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
+		template.KCV.Execute(w, nil)
 		return
 	} else {
 		clearCookie(w, self.CookieID())

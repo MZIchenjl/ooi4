@@ -2,14 +2,15 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/MZIchenjl/ooi4/session"
-	"github.com/gorilla/mux"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
+
+	"github.com/MZIchenjl/ooi4/session"
+	"github.com/gorilla/mux"
 )
 
 type APIHandler struct {

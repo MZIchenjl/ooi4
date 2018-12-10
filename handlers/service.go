@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/MZIchenjl/ooi4/auth"
 	"net/http"
+
+	"github.com/MZIchenjl/ooi4/auth"
 )
 
 type ServiceHandler struct {
