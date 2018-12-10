@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/MZIchenjl/ooi4/session"
 	"github.com/gorilla/mux"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -12,9 +13,8 @@ import (
 
 type APIHandler struct {
 	BaseHandler
-	apiStart2 []byte
-	worlds    map[string][]byte
-	mu        sync.Mutex
+	worlds map[string][]byte
+	mu     sync.Mutex
 }
 
 func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +44,42 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		w.Write(self.worlds[imageName])
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
+func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	action := vars["action"]
+	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	if sess.WorldIP != "" {
+		referer := r.Header.Get("Referer")
+		referer = strings.Replace(referer, r.Host, sess.WorldIP, 1)
+		referer = strings.Replace(referer, "https://", "http://", 1)
+		u := fmt.Sprintf("http://%s/kcsapi/%s", sess.WorldIP, action)
+		req, _ := http.NewRequest(http.MethodPost, u, r.Body)
+		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko")
+		req.Header.Set("Origin", fmt.Sprintf("http://%s/", sess.WorldIP))
+		req.Header.Set("Referer", referer)
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+		defer res.Body.Close()
+		w.Header().Set("Content-Type", "text/plain")
+		buf := make([]byte, 1024)
+		for {
+			n, err := res.Body.Read(buf)
+			if err != nil && err != io.EOF {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			if 0 == n {
+				break
+			}
+			w.Write(buf)
+		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
