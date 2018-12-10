@@ -34,6 +34,7 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 			coro, err := http.Get(u)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 				return
 			}
 			defer coro.Body.Close()
@@ -42,12 +43,14 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 			self.mu.Unlock()
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 				return
 			}
 		}
 		w.Write(self.worlds[imageName])
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 	}
 }
 
@@ -68,6 +71,8 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		res, err := http.DefaultClient.Do(r)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+			return
 		}
 		defer res.Body.Close()
 		w.Header().Set("Content-Type", "text/plain")
@@ -76,6 +81,7 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 			n, err := res.Body.Read(buf)
 			if err != nil && err != io.EOF {
 				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 				return
 			}
 			if 0 == n {
@@ -85,5 +91,6 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 	}
 }

@@ -15,6 +15,7 @@ func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
 	loginID := r.Form.Get("login_id")
@@ -36,6 +37,7 @@ func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {
 		})
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 	}
 }
 
@@ -43,6 +45,7 @@ func (self *ServiceHandler) GetFlash(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
 	loginID := r.Form.Get("login_id")
@@ -64,5 +67,6 @@ func (self *ServiceHandler) GetFlash(w http.ResponseWriter, r *http.Request) {
 		})
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 	}
 }

@@ -58,6 +58,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
 	sess := session.GetSession(r, self.CookieID(), self.Secret())
@@ -66,6 +67,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 	mode, err := strconv.ParseInt(r.Form.Get("mode"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
 	sess.Mode = int(mode)
@@ -107,6 +109,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/connector", http.StatusFound)
 		default:
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		}
 	} else {
 		template.Form.Execute(w, TmplParams{
