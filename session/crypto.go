@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var COOKIE_INVALID = errors.New("Cookie 签名不合法")
+var CookieInvalid = errors.New("Cookie 签名不合法")
 
 func sign(val []byte, secret string) []byte {
 	macBuilder := hmac.New(sha256.New, []byte(secret))
@@ -29,21 +29,21 @@ func padding(key string) []byte {
 
 func unsign(val, secret string) (error, []byte) {
 	spIdx := strings.LastIndex(val, ".")
-	str := []byte(val[:spIdx])
-	mac := []byte(val[spIdx:])
+	str := val[:spIdx]
+	mac := val[spIdx:]
 	var strBytes []byte
 	var macBytes []byte
 	var err error
-	_, err = base64.StdEncoding.Decode(strBytes, str)
-	_, err = base64.StdEncoding.Decode(macBytes, mac)
+	strBytes, err = base64.StdEncoding.DecodeString(str)
+	macBytes, err = base64.StdEncoding.DecodeString(mac)
 	if err != nil {
-		return COOKIE_INVALID, nil
+		return CookieInvalid, nil
 	}
 	nmacBytes := sign(strBytes, secret)
 	if hmac.Equal(macBytes, nmacBytes) {
 		return nil, strBytes
 	}
-	return COOKIE_INVALID, nil
+	return CookieInvalid, nil
 }
 
 func decrypt(val []byte, secret string) []byte {
