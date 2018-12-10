@@ -6,7 +6,7 @@ import (
 )
 
 func Test_getSalt(t *testing.T) {
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 100000; i++ {
 		getSalt(16)
 	}
 	fmt.Println(getSalt(16))

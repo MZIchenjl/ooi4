@@ -10,8 +10,8 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 func getSalt(l int) string {
 	var j []byte
+	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < l; i++ {
-		rand.Seed(time.Now().UnixNano())
 		r := rand.Intn(26)
 		j = append(j, alphabet[r])
 	}
