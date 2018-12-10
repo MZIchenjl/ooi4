@@ -1,8 +1,8 @@
 package session
 
 import (
-	"bytes"
 	"encoding/base64"
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -17,6 +17,9 @@ func GetSession(r *http.Request, name, secret string) *Session {
 		return NewSession()
 	}
 	err, rawb := unsign(val, secret)
+	if err != nil {
+		return NewSession()
+	}
 	raw := decrypt(rawb, secret)
 	dec := Decode(raw)
 	if dec == nil {
@@ -26,11 +29,7 @@ func GetSession(r *http.Request, name, secret string) *Session {
 }
 
 func GetCooke(s *Session, secret string) string {
-	sbu := bytes.NewBuffer(nil)
 	enc := encrypt(Encode(s), secret)
-	sbu.Write(enc)
-	sbu.WriteByte('.')
 	mac := sign(enc, secret)
-	sbu.Write(mac)
-	return base64.StdEncoding.EncodeToString(sbu.Bytes())
+	return fmt.Sprintf("%s.%s", base64.StdEncoding.EncodeToString(enc), base64.StdEncoding.EncodeToString(mac))
 }

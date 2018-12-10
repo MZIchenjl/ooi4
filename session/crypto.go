@@ -3,6 +3,7 @@ package session
 import (
 	"bytes"
 	"crypto/aes"
+	"crypto/cipher"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -30,7 +31,7 @@ func padding(key string) []byte {
 func unsign(val, secret string) (error, []byte) {
 	spIdx := strings.LastIndex(val, ".")
 	str := val[:spIdx]
-	mac := val[spIdx:]
+	mac := val[spIdx+1:]
 	var strBytes []byte
 	var macBytes []byte
 	var err error
@@ -46,16 +47,37 @@ func unsign(val, secret string) (error, []byte) {
 	return CookieInvalid, nil
 }
 
+func PKCS5Padding(val []byte, blockSize int) []byte {
+	padding := blockSize - len(val)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(val, padtext...)
+}
+
+func PKCS5UnPadding(val []byte) []byte {
+	length := len(val)
+	if length == 0 {
+		return val
+	}
+	unpadding := int(val[length-1])
+	return val[:(length - unpadding)]
+}
+
 func decrypt(val []byte, secret string) []byte {
-	cipher, _ := aes.NewCipher(padding(secret))
-	var ret []byte
-	cipher.Decrypt(ret, val)
+	block, _ := aes.NewCipher(padding(secret))
+	blockSize := block.BlockSize()
+	blockMode := cipher.NewCBCDecrypter(block, []byte(secret[:blockSize]))
+	ret := make([]byte, len(val))
+	blockMode.CryptBlocks(ret, val)
+	ret = PKCS5UnPadding(ret)
 	return ret
 }
 
 func encrypt(val []byte, secret string) []byte {
-	cipher, _ := aes.NewCipher(padding(secret))
-	var ret []byte
-	cipher.Encrypt(ret, val)
+	block, _ := aes.NewCipher(padding(secret))
+	blockSize := block.BlockSize()
+	val = PKCS5Padding(val, blockSize)
+	blockMode := cipher.NewCBCEncrypter(block, []byte(secret[:blockSize]))
+	ret := make([]byte, len(val))
+	blockMode.CryptBlocks(ret, val)
 	return ret
 }
