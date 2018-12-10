@@ -1,4 +1,4 @@
-package ooi4
+package main
 
 import (
 	"context"
