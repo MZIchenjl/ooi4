@@ -1,9 +1,8 @@
-package template
+package templates
 
 import "html/template"
 
-var Connector = template.Must(template.New("Connector").Parse(`<!DOCTYPE html>
-<html lang="zh-Hans-CN">
+var KCV = template.Must(template.New("KCV").Parse(`<html lang="zh-Hans-CN">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,8 +28,7 @@ var Connector = template.Must(template.New("Connector").Parse(`<!DOCTYPE html>
   </div>
   <div id="ooi-content" class="uk-grid">
     <div id="ooi-game" class="uk-width-1-1 uk-text-center">
-      <p>登录游戏成功！</p>
-      <p><a href="{{.OSAPIURL}}">打开游戏</a></p>
+      <iframe id="game_frame" src="/flash" width="1280" height="800" frameborder="0" scrolling="no"></iframe>
     </div>
   </div>
   <div id="ooi-footer" class="uk-text-center">

@@ -1,8 +1,8 @@
-package template
+package templates
 
 import "html/template"
 
-var Normal = template.Must(template.New("Normal").Parse(`<!DOCTYPE html>
+var Connector = template.Must(template.New("Connector").Parse(`<!DOCTYPE html>
 <html lang="zh-Hans-CN">
 <head>
   <meta charset="UTF-8">
@@ -29,8 +29,8 @@ var Normal = template.Must(template.New("Normal").Parse(`<!DOCTYPE html>
   </div>
   <div id="ooi-content" class="uk-grid">
     <div id="ooi-game" class="uk-width-1-1 uk-text-center">
-      <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="{{.Scheme}}://{{.Host}}/kcs2/" src="{{.Scheme}}://{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&amp;api_starttime={{.StartTime}}" style="display: block !important;"></embed>
-      <a href="/logout" class="uk-button uk-button-primary">重新登录</a>
+      <p>登录游戏成功！</p>
+      <p><a href="{{.OSAPIURL}}">打开游戏</a></p>
     </div>
   </div>
   <div id="ooi-footer" class="uk-text-center">

@@ -6,7 +6,7 @@ import (
 
 	"github.com/MZIchenjl/ooi4/auth"
 	"github.com/MZIchenjl/ooi4/session"
-	"github.com/MZIchenjl/ooi4/template"
+	"github.com/MZIchenjl/ooi4/templates"
 )
 
 type FrontEndHandler struct {
@@ -43,15 +43,15 @@ func clearCookie(w http.ResponseWriter, name string) {
 
 func (self *FrontEndHandler) Form(w http.ResponseWriter, r *http.Request) {
 	var mode int
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.Mode != 0 {
 		mode = sess.Mode
 	} else {
 		mode = 1
 		sess.Mode = mode
-		setCookie(w, sess, self.CookieID(), self.Secret())
+		setCookie(w, sess, self.CookieID, self.Secret)
 	}
-	template.Form.Execute(w, TmplParams{Mode: mode})
+	templates.Form.Execute(w, TmplParams{Mode: mode})
 }
 
 func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +61,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	loginID := r.Form.Get("login_id")
 	password := r.Form.Get("password")
 	mode, err := strconv.ParseInt(r.Form.Get("mode"), 10, 64)
@@ -77,7 +77,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 		case 1, 2, 3:
 			err, _ := kancolle.GetEntry()
 			if err != nil {
-				template.Form.Execute(w, TmplParams{
+				templates.Form.Execute(w, TmplParams{
 					ErrMsg: err.Error(),
 					Mode:   sess.Mode,
 				})
@@ -86,7 +86,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 			sess.APIStartTime = kancolle.APIStartTime
 			sess.APIToken = kancolle.APIToken
 			sess.WorldIP = kancolle.WorldIP
-			setCookie(w, sess, self.CookieID(), self.Secret())
+			setCookie(w, sess, self.CookieID, self.Secret)
 			switch mode {
 			default:
 				http.Redirect(w, r, "/kancolle", http.StatusFound)
@@ -98,21 +98,21 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 		case 4:
 			err, osapiURL := kancolle.GetOSAPI()
 			if err != nil {
-				template.Form.Execute(w, TmplParams{
+				templates.Form.Execute(w, TmplParams{
 					ErrMsg: err.Error(),
 					Mode:   sess.Mode,
 				})
 				return
 			}
 			sess.OSAPIURL = osapiURL
-			setCookie(w, sess, self.CookieID(), self.Secret())
+			setCookie(w, sess, self.CookieID, self.Secret)
 			http.Redirect(w, r, "/connector", http.StatusFound)
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		}
 	} else {
-		template.Form.Execute(w, TmplParams{
+		templates.Form.Execute(w, TmplParams{
 			ErrMsg: "请输入完整的登录ID和密码",
 			Mode:   sess.Mode,
 		})
@@ -120,9 +120,9 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
-		template.Normal.Execute(w, TmplParams{
+		templates.Normal.Execute(w, TmplParams{
 			Schema:    r.URL.Scheme,
 			Host:      r.Host,
 			Token:     sess.APIToken,
@@ -130,15 +130,15 @@ func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	} else {
-		clearCookie(w, self.CookieID())
+		clearCookie(w, self.CookieID)
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
 func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
-		template.Flash.Execute(w, TmplParams{
+		templates.Flash.Execute(w, TmplParams{
 			Schema:    r.URL.Scheme,
 			Host:      r.Host,
 			Token:     sess.APIToken,
@@ -146,26 +146,26 @@ func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	} else {
-		clearCookie(w, self.CookieID())
+		clearCookie(w, self.CookieID)
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
 func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
-		template.KCV.Execute(w, nil)
+		templates.KCV.Execute(w, nil)
 		return
 	} else {
-		clearCookie(w, self.CookieID())
+		clearCookie(w, self.CookieID)
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
 func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
-		template.Poi.Execute(w, TmplParams{
+		templates.Poi.Execute(w, TmplParams{
 			Schema:    r.URL.Scheme,
 			Host:      r.Host,
 			Token:     sess.APIToken,
@@ -173,25 +173,25 @@ func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	} else {
-		clearCookie(w, self.CookieID())
+		clearCookie(w, self.CookieID)
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
 func (self *FrontEndHandler) Connector(w http.ResponseWriter, r *http.Request) {
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.OSAPIURL != "" {
-		template.Connector.Execute(w, TmplParams{
+		templates.Connector.Execute(w, TmplParams{
 			OSAPIURL: sess.OSAPIURL,
 		})
 		return
 	} else {
-		clearCookie(w, self.CookieID())
+		clearCookie(w, self.CookieID)
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
 func (self *FrontEndHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	clearCookie(w, self.CookieID())
+	clearCookie(w, self.CookieID)
 	http.Redirect(w, r, "/", http.StatusFound)
 }

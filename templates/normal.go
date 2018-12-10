@@ -1,8 +1,9 @@
-package template
+package templates
 
 import "html/template"
 
-var KCV = template.Must(template.New("KCV").Parse(`<html lang="zh-Hans-CN">
+var Normal = template.Must(template.New("Normal").Parse(`<!DOCTYPE html>
+<html lang="zh-Hans-CN">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,7 +29,8 @@ var KCV = template.Must(template.New("KCV").Parse(`<html lang="zh-Hans-CN">
   </div>
   <div id="ooi-content" class="uk-grid">
     <div id="ooi-game" class="uk-width-1-1 uk-text-center">
-      <iframe id="game_frame" src="/flash" width="1280" height="800" frameborder="0" scrolling="no"></iframe>
+      <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="{{.Scheme}}://{{.Host}}/kcs2/" src="{{.Scheme}}://{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&amp;api_starttime={{.StartTime}}" style="display: block !important;"></embed>
+      <a href="/logout" class="uk-button uk-button-primary">重新登录</a>
     </div>
   </div>
   <div id="ooi-footer" class="uk-text-center">
