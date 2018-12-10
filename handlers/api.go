@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 )
@@ -54,15 +55,16 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 	action := vars["action"]
 	sess := session.GetSession(r, self.CookieID(), self.Secret())
 	if sess.WorldIP != "" {
-		referer := r.Header.Get("Referer")
+		referer := r.Referer()
 		referer = strings.Replace(referer, r.Host, sess.WorldIP, 1)
 		referer = strings.Replace(referer, "https://", "http://", 1)
-		u := fmt.Sprintf("http://%s/kcsapi/%s", sess.WorldIP, action)
-		req, _ := http.NewRequest(http.MethodPost, u, r.Body)
-		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko")
-		req.Header.Set("Origin", fmt.Sprintf("http://%s/", sess.WorldIP))
-		req.Header.Set("Referer", referer)
-		res, err := http.DefaultClient.Do(req)
+		u, err := url.Parse(fmt.Sprintf("http://%s/kcsapi/%s", sess.WorldIP, action))
+		r.URL = u
+		r.Host = u.Host
+		r.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko")
+		r.Header.Set("Origin", fmt.Sprintf("http://%s/", sess.WorldIP))
+		r.Header.Set("Referer", referer)
+		res, err := http.DefaultClient.Do(r)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 		}
