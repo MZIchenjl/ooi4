@@ -7,6 +7,8 @@ type BaseHandler struct {
 	cookieID string
 }
 
+const chunkSize = 1024
+
 func (self *BaseHandler) Secret() string {
 	if self.secret != "" {
 		return self.secret

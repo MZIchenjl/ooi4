@@ -70,7 +70,7 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		}
 		defer res.Body.Close()
 		w.Header().Set("Content-Type", "text/plain")
-		buf := make([]byte, 1024)
+		buf := make([]byte, chunkSize)
 		for {
 			n, err := res.Body.Read(buf)
 			if err != nil && err != io.EOF {
