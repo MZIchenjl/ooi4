@@ -14,7 +14,11 @@ func GetSession(r *http.Request, name, secret string) *Session {
 	val := cookie.Value
 	err, rawb := unsign(val, secret)
 	raw := decrypt(rawb, secret)
-	return Decode(raw)
+	dec := Decode(raw)
+	if dec == nil {
+		return NewSession()
+	}
+	return dec
 }
 
 func GetCooke(s *Session, secret string) string {

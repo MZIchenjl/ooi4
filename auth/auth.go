@@ -18,7 +18,7 @@ type KancolleAuth struct {
 	http.Client
 	header       http.Header
 	worldID      int
-	apiStartTime int64
+	APIStartTime int64
 	st           string
 	loginID      string
 	password     string
@@ -28,8 +28,8 @@ type KancolleAuth struct {
 	owner        string
 	osapiURL     string
 	pwdKey       string
-	worldIP      string
-	apiToken     string
+	WorldIP      string
+	APIToken     string
 	entry        string
 }
 
@@ -216,7 +216,7 @@ func (self *KancolleAuth) getWorld() error {
 		return errors.New("调查提督所在镇守府时发生错误")
 	}
 	self.worldID = svdata.APIData.APIWorldId
-	self.worldIP = worldIPList[self.worldID-1]
+	self.WorldIP = worldIPList[self.worldID-1]
 	return nil
 }
 
@@ -228,7 +228,7 @@ type apiTokenRes struct {
 }
 
 func (self *KancolleAuth) getAPIToken() error {
-	u := fmt.Sprintf(urlLayouts["get_entry"], self.worldIP, self.owner, time.Now().UnixNano()/1e6)
+	u := fmt.Sprintf(urlLayouts["get_entry"], self.WorldIP, self.owner, time.Now().UnixNano()/1e6)
 	data := make(url.Values)
 	data.Set("url", u)
 	data.Set("httpMethod", "GET")
@@ -273,9 +273,9 @@ func (self *KancolleAuth) getAPIToken() error {
 	if err != nil || svdata.APIResult != 1 {
 		return errors.New("调查提督进入镇守府的口令时发生错误")
 	}
-	self.apiToken = svdata.APIToken
-	self.apiStartTime = svdata.APIStarttime
-	self.entry = fmt.Sprintf(urlLayouts["entry"], self.worldIP, self.apiToken, self.apiStartTime)
+	self.APIToken = svdata.APIToken
+	self.APIStartTime = svdata.APIStarttime
+	self.entry = fmt.Sprintf(urlLayouts["entry"], self.WorldIP, self.APIStartTime, self.APIStartTime)
 	return nil
 }
 
