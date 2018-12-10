@@ -10,7 +10,7 @@ import (
 )
 
 type FrontEndHandler struct {
-	BaseHandler
+	baseHandler
 }
 
 type TmplParams struct {

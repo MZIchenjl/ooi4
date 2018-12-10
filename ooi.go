@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	"github.com/BurntSushi/toml"
+	"github.com/MZIchenjl/ooi4/conf"
 	"github.com/MZIchenjl/ooi4/handlers"
 	"github.com/gorilla/mux"
 )
@@ -15,9 +18,24 @@ import (
 const wait = time.Second * 15
 
 func main() {
-	api := handlers.APIHandler{}
-	f2e := handlers.FrontEndHandler{}
-	ser := handlers.ServiceHandler{}
+	appConfig := new(conf.Config)
+	_, err := toml.DecodeFile("app.toml", appConfig)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	api := &handlers.APIHandler{}
+	f2e := &handlers.FrontEndHandler{}
+	ser := &handlers.ServiceHandler{}
+
+	api.Secret = appConfig.Secret
+	api.CookieID = appConfig.Cookie
+
+	f2e.Secret = appConfig.Secret
+	f2e.CookieID = appConfig.Cookie
+
+	ser.Secret = appConfig.Secret
+	ser.CookieID = appConfig.Cookie
 
 	r := mux.NewRouter()
 
@@ -33,9 +51,10 @@ func main() {
 	r.Methods(http.MethodGet).Path("/kcs/resources/image/world/{server:.+}_{size:[lst]}.png").HandlerFunc(api.WorldImage)
 	r.Methods(http.MethodPost).Path("/service/osapi").HandlerFunc(ser.GetOSAPI)
 	r.Methods(http.MethodPost).Path("/service/flash").HandlerFunc(ser.GetFlash)
+	r.Methods(http.MethodGet).PathPrefix("/static").Handler(http.FileServer(http.Dir("./static")))
 
 	srv := &http.Server{
-		Addr:         "0.0.0.0:8080",
+		Addr:         fmt.Sprintf("0.0.0.0:%d", appConfig.Port),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
@@ -43,7 +62,7 @@ func main() {
 	}
 
 	go func() {
-		log.Printf("OOI serving on http://%s\n", srv.Addr)
+		log.Printf("OOI serving on http://127.0.0.1:%d\n", appConfig.Port)
 		if err := srv.ListenAndServe(); err != nil {
 			log.Println(err)
 			ctx, cancel := context.WithTimeout(context.Background(), wait)

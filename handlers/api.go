@@ -14,7 +14,7 @@ import (
 )
 
 type APIHandler struct {
-	BaseHandler
+	baseHandler
 	worlds map[string][]byte
 	mu     sync.Mutex
 }
@@ -22,7 +22,7 @@ type APIHandler struct {
 func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	size := vars["size"]
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.WorldIP != "" {
 		ipSections := strings.Split(sess.WorldIP, ".")
 		for i, v := range ipSections {
@@ -57,7 +57,7 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	action := vars["action"]
-	sess := session.GetSession(r, self.CookieID(), self.Secret())
+	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.WorldIP != "" {
 		referer := r.Referer()
 		referer = strings.Replace(referer, r.Host, sess.WorldIP, 1)

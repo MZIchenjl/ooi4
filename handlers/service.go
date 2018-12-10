@@ -8,7 +8,7 @@ import (
 )
 
 type ServiceHandler struct {
-	BaseHandler
+	baseHandler
 }
 
 func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {

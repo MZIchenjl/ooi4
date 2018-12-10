@@ -1,5 +1,13 @@
 # editor
 .idea/
+.vscode/
 
 #macosx
 .DS_Store
+
+#secret
+app.toml
+
+#build
+ooi4
+debug
