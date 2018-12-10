@@ -6,7 +6,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
-	"github.com/pkg/errors"
+	"errors"
 	"strings"
 )
 
