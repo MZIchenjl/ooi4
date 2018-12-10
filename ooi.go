@@ -51,7 +51,7 @@ func main() {
 	r.Methods(http.MethodGet).Path("/kcs/resources/image/world/{server:.+}_{size:[lst]}.png").HandlerFunc(api.WorldImage)
 	r.Methods(http.MethodPost).Path("/service/osapi").HandlerFunc(ser.GetOSAPI)
 	r.Methods(http.MethodPost).Path("/service/flash").HandlerFunc(ser.GetFlash)
-	r.Methods(http.MethodGet).PathPrefix("/static").Handler(http.FileServer(http.Dir("./static")))
+	r.Methods(http.MethodGet).PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf("0.0.0.0:%d", appConfig.Port),
