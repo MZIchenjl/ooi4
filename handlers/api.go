@@ -63,31 +63,32 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		referer = strings.Replace(referer, r.Host, sess.WorldIP, 1)
 		referer = strings.Replace(referer, "https://", "http://", 1)
 		u, err := url.Parse(fmt.Sprintf("http://%s/kcsapi/%s", sess.WorldIP, action))
-		r.URL = u
-		r.Host = u.Host
-		r.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko")
-		r.Header.Set("Origin", fmt.Sprintf("http://%s/", sess.WorldIP))
-		r.Header.Set("Referer", referer)
-		res, err := http.DefaultClient.Do(r)
+		req, err := http.NewRequest(r.Method, u.String(), r.Body)
+		req.Header = r.Header
+		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko")
+		req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, sess.WorldIP, 1))
+		req.Header.Set("Referer", referer)
+		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 			return
 		}
 		defer res.Body.Close()
-		w.Header().Set("Content-Type", "text/plain")
+		w.Header().Set("Date", res.Header.Get("Date"))
+		w.Header().Set("Connection", res.Header.Get("Connection"))
+		w.Header().Set("Content-Type", res.Header.Get("Content-Type"))
+		w.Header().Set("Content-Encoding", res.Header.Get("Content-Encoding"))
 		buf := make([]byte, chunkSize)
 		for {
 			n, err := res.Body.Read(buf)
 			if err != nil && err != io.EOF {
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 				return
 			}
-			if 0 == n {
+			w.Write(buf[:n])
+			if err == io.EOF {
 				break
 			}
-			w.Write(buf)
 		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest)

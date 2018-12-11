@@ -29,7 +29,7 @@ var Normal = template.Must(template.New("Normal").Parse(`<!DOCTYPE html>
   </div>
   <div id="ooi-content" class="uk-grid">
     <div id="ooi-game" class="uk-width-1-1 uk-text-center">
-      <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="{{.Scheme}}://{{.Host}}/kcs2/" src="{{.Scheme}}://{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&amp;api_starttime={{.StartTime}}" style="display: block !important;"></embed>
+      <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="//{{.Host}}/kcs2/" src="//{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&amp;api_starttime={{.StartTime}}" style="display: block !important;"></embed>
       <a href="/logout" class="uk-button uk-button-primary">重新登录</a>
     </div>
   </div>

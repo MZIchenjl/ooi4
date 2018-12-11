@@ -216,7 +216,7 @@ func (self *KancolleAuth) getWorld() error {
 		return errors.New("调查提督所在镇守府时发生错误")
 	}
 	self.worldID = svdata.APIData.APIWorldId
-	self.WorldIP = worldIPList[self.worldID-1]
+	self.WorldIP = WorldIPList[self.worldID-1]
 	return nil
 }
 

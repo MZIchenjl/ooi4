@@ -19,7 +19,7 @@ var Flash = template.Must(template.New("Flash").Parse(`<!DOCTYPE html>
 <body>
   <div id="spacing_top" style="height:16px;"></div>
   <div id="flashWrap" style="width: 800px; margin: auto;">
-    <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="{{.Schema}}://{{.Host}}/kcs2/" src="{{.Schema}}://{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&amp;api_starttime={{.StartTime}}" style="display: block !important;"></embed>
+    <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="//{{.Host}}/kcs2/" src="//{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&amp;api_starttime={{.StartTime}}" style="display: block !important;"></embed>
   </div>
   <div class="statistics">
   </div>

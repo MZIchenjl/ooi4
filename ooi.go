@@ -27,6 +27,7 @@ func main() {
 	api := &handlers.APIHandler{}
 	f2e := &handlers.FrontEndHandler{}
 	ser := &handlers.ServiceHandler{}
+	pro := &handlers.ProxyHandler{}
 
 	api.Init(appConfig.Secret, appConfig.Cookie)
 	f2e.Init(appConfig.Secret, appConfig.Cookie)
@@ -48,6 +49,11 @@ func main() {
 
 	r.Methods(http.MethodPost).Path("/service/osapi").HandlerFunc(ser.GetOSAPI)
 	r.Methods(http.MethodPost).Path("/service/flash").HandlerFunc(ser.GetFlash)
+
+	r.Methods(http.MethodGet).PathPrefix("/kcs").HandlerFunc(pro.Proxy)
+	r.Methods(http.MethodGet).PathPrefix("/_kcs").HandlerFunc(pro.Proxy)
+	r.Methods(http.MethodGet).PathPrefix("/kcs2").HandlerFunc(pro.Proxy)
+	r.Methods(http.MethodGet).PathPrefix("/_kcs2").HandlerFunc(pro.Proxy)
 
 	r.Methods(http.MethodGet).PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 

@@ -2,7 +2,7 @@ package auth
 
 import "regexp"
 
-var worldIPList = []string{
+var WorldIPList = []string{
 	"203.104.209.71",
 	"203.104.209.87",
 	"125.6.184.215",

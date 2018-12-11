@@ -17,7 +17,6 @@ type TmplParams struct {
 	Mode      int
 	StartTime int64
 	OSAPIURL  string
-	Scheme    string
 	Host      string
 	ErrMsg    string
 	Token     string
@@ -28,6 +27,7 @@ func setCookie(w http.ResponseWriter, sess *session.Session, name, secret string
 		Name:     name,
 		Value:    session.GetCooke(sess, secret),
 		HttpOnly: true,
+		MaxAge:   0,
 	}
 	http.SetCookie(w, cookie)
 }
@@ -123,7 +123,6 @@ func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
 	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
 		templates.Normal.Execute(w, TmplParams{
-			Scheme:    r.URL.Scheme,
 			Host:      r.Host,
 			Token:     sess.APIToken,
 			StartTime: sess.APIStartTime,
@@ -139,7 +138,6 @@ func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
 	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
 		templates.Flash.Execute(w, TmplParams{
-			Scheme:    r.URL.Scheme,
 			Host:      r.Host,
 			Token:     sess.APIToken,
 			StartTime: sess.APIStartTime,
@@ -166,7 +164,6 @@ func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
 	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
 		templates.Poi.Execute(w, TmplParams{
-			Scheme:    r.URL.Scheme,
 			Host:      r.Host,
 			Token:     sess.APIToken,
 			StartTime: sess.APIStartTime,
