@@ -3,29 +3,19 @@ package handlers
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
-	"net/url"
 	"strings"
-	"sync"
 
 	"github.com/MZIchenjl/ooi4/auth"
 	"github.com/gorilla/mux"
 )
 
-type APIHandler struct {
-	baseHandler
-	worlds map[string][]byte
-	mu     sync.Mutex
-}
+type APIHandler struct{}
 
 func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
-	if self.worlds == nil {
-		self.worlds = make(map[string][]byte)
-	}
 	vars := mux.Vars(r)
 	size := vars["size"]
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
@@ -38,25 +28,36 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 			ipSections[i] = fmt.Sprintf("%03s", v)
 		}
 		imageName := fmt.Sprintf("%s_%s", strings.Join(ipSections, "_"), size)
-		if self.worlds[imageName] == nil {
-			u := fmt.Sprintf("http://203.104.209.102/kcs2/resources/world/%s.png", imageName)
-			coro, err := http.Get(u)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write([]byte(http.StatusText(http.StatusBadRequest)))
-				return
-			}
-			defer coro.Body.Close()
-			self.mu.Lock()
-			self.worlds[imageName], err = ioutil.ReadAll(coro.Body)
-			self.mu.Unlock()
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write([]byte(http.StatusText(http.StatusBadRequest)))
-				return
+		u := fmt.Sprintf("http://203.104.209.102/kcs2/resources/world/%s.png", imageName)
+		coro, err := http.Get(u)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+			return
+		}
+		defer coro.Body.Close()
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+			return
+		}
+		defer coro.Body.Close()
+		for key := range coro.Header {
+			if !isExluded(key) {
+				w.Header().Set(key, coro.Header.Get(key))
 			}
 		}
-		w.Write(self.worlds[imageName])
+		buf := make([]byte, chunkSize)
+		for {
+			n, err := coro.Body.Read(buf)
+			if err != nil && err != io.EOF {
+				return
+			}
+			w.Write(buf[:n])
+			if err == io.EOF {
+				break
+			}
+		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
@@ -64,9 +65,7 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	action := vars["action"]
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
@@ -74,14 +73,17 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 	}
 	worldIP := session.Values["world_ip"]
 	if worldIP != nil {
+		WorldIP := worldIP.(string)
 		referer := r.Referer()
-		referer = strings.Replace(referer, r.Host, worldIP.(string), 1)
+		referer = strings.Replace(referer, r.Host, WorldIP, 1)
 		referer = strings.Replace(referer, "https://", "http://", 1)
-		u, err := url.Parse(fmt.Sprintf("http://%s/kcsapi/%s", worldIP, action))
+		u := *r.URL
+		u.Scheme = "http"
+		u.Host = WorldIP
 		req, err := http.NewRequest(r.Method, u.String(), r.Body)
 		req.Header = r.Header
 		req.Header.Set("User-Agent", auth.UserAgent)
-		req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, worldIP.(string), 1))
+		req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, WorldIP, 1))
 		req.Header.Set("Referer", referer)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -91,7 +93,7 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		}
 		defer res.Body.Close()
 		for key := range res.Header {
-			if key != "Content-Length" {
+			if !isExluded(key) {
 				w.Header().Set(key, res.Header.Get(key))
 			}
 		}

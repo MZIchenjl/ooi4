@@ -9,9 +9,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-type FrontEndHandler struct {
-	baseHandler
-}
+type FrontEndHandler struct{}
 
 type TmplParams struct {
 	Mode      int
@@ -23,12 +21,12 @@ type TmplParams struct {
 }
 
 func (self *FrontEndHandler) clearCookie(w http.ResponseWriter, r *http.Request) {
-	session := sessions.NewSession(self.cookieStore, self.cookieName)
+	session := sessions.NewSession(cookieStore, cookieName)
 	session.Save(r, w)
 }
 
 func (self *FrontEndHandler) Form(w http.ResponseWriter, r *http.Request) {
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
 		w.WriteHeader(http.StatusBadRequest)
@@ -51,7 +49,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
 		w.WriteHeader(http.StatusBadRequest)
@@ -116,7 +114,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
 		w.WriteHeader(http.StatusBadRequest)
@@ -141,7 +139,7 @@ func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
 		w.WriteHeader(http.StatusBadRequest)
@@ -166,7 +164,7 @@ func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
 		w.WriteHeader(http.StatusBadRequest)
@@ -187,7 +185,7 @@ func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
 		w.WriteHeader(http.StatusBadRequest)
@@ -212,7 +210,7 @@ func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *FrontEndHandler) Connector(w http.ResponseWriter, r *http.Request) {
-	session, err := self.cookieStore.Get(r, self.cookieName)
+	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
 		w.WriteHeader(http.StatusBadRequest)

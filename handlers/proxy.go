@@ -3,19 +3,16 @@ package handlers
 import (
 	"io"
 	"net/http"
-	"net/url"
 	"strings"
 
 	"github.com/MZIchenjl/ooi4/auth"
 )
 
-type ProxyHandler struct {
-	baseHandler
-}
+type ProxyHandler struct{}
 
 func (self *ProxyHandler) Proxy(w http.ResponseWriter, r *http.Request) {
 	host := auth.WorldIPList[0]
-	u, _ := url.Parse(r.URL.String())
+	u := *r.URL
 	u.Scheme = "http"
 	u.Host = host
 	req, _ := http.NewRequest(r.Method, u.String(), r.Body)
@@ -34,7 +31,7 @@ func (self *ProxyHandler) Proxy(w http.ResponseWriter, r *http.Request) {
 	}
 	defer res.Body.Close()
 	for key := range res.Header {
-		if key != "Content-Length" {
+		if !isExluded(key) {
 			w.Header().Set(key, res.Header.Get(key))
 		}
 	}

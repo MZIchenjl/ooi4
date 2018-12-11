@@ -7,9 +7,7 @@ import (
 	"github.com/MZIchenjl/ooi4/auth"
 )
 
-type ServiceHandler struct {
-	baseHandler
-}
+type ServiceHandler struct{}
 
 func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()

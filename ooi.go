@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,20 +19,20 @@ import (
 const wait = time.Second * 15
 
 func main() {
+	flag.Parse()
+	confile := flag.String("config", "app.toml", "Set the config file(toml)")
 	appConfig := new(conf.Config)
-	_, err := toml.DecodeFile("app.toml", appConfig)
+	_, err := toml.DecodeFile(*confile, appConfig)
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	handlers.Init(appConfig.Secret, appConfig.Cookie)
 
 	api := &handlers.APIHandler{}
 	f2e := &handlers.FrontEndHandler{}
 	ser := &handlers.ServiceHandler{}
 	pro := &handlers.ProxyHandler{}
-
-	api.Init(appConfig.Secret, appConfig.Cookie)
-	f2e.Init(appConfig.Secret, appConfig.Cookie)
-	ser.Init(appConfig.Secret, appConfig.Cookie)
 
 	r := mux.NewRouter()
 
