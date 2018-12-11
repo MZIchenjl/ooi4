@@ -3,7 +3,6 @@ package handlers
 import (
 	"io"
 	"net/http"
-	"net/url"
 	"strings"
 
 	"github.com/MZIchenjl/ooi4/auth"

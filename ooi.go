@@ -59,8 +59,11 @@ func main() {
 	r.Methods(http.MethodGet).PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf("0.0.0.0:%d", appConfig.Port),
-		Handler: r,
+		Addr:         fmt.Sprintf("0.0.0.0:%d", appConfig.Port),
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      r,
 	}
 
 	go func() {
