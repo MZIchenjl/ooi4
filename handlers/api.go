@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/MZIchenjl/ooi4/auth"
@@ -17,8 +18,7 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 	size := vars["size"]
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	worldIP := session.Values["world_ip"]
@@ -31,14 +31,12 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 		u := fmt.Sprintf("http://203.104.209.102/kcs2/resources/world/%s.png", imageName)
 		coro, err := http.Get(u)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
 		defer coro.Body.Close()
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
 		defer coro.Body.Close()
@@ -59,16 +57,14 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
 func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	worldIP := session.Values["world_ip"]
@@ -87,8 +83,7 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		req.Header.Set("Referer", referer)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
 		defer res.Body.Close()
@@ -109,7 +104,6 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }

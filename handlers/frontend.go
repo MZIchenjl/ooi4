@@ -29,8 +29,7 @@ func (self *FrontEndHandler) Form(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	mode := session.Values["mode"]
@@ -45,23 +44,20 @@ func (self *FrontEndHandler) Form(w http.ResponseWriter, r *http.Request) {
 func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	loginID := r.Form.Get("login_id")
 	password := r.Form.Get("password")
 	mode, err := strconv.ParseInt(r.Form.Get("mode"), 10, 64)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	session.Values["mode"] = int(mode)
@@ -102,8 +98,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 			session.Save(r, w)
 			http.Redirect(w, r, "/connector", http.StatusFound)
 		default:
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		}
 	} else {
 		templates.Form.Execute(w, TmplParams{
@@ -117,8 +112,7 @@ func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	apiStartTime := session.Values["api_starttime"]
@@ -133,8 +127,7 @@ func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
@@ -142,8 +135,7 @@ func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	apiStartTime := session.Values["api_starttime"]
@@ -158,8 +150,7 @@ func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
@@ -167,8 +158,7 @@ func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	apiStartTime := session.Values["api_starttime"]
@@ -179,8 +169,7 @@ func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
@@ -188,8 +177,7 @@ func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	apiStartTime := session.Values["api_starttime"]
@@ -204,8 +192,7 @@ func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
@@ -213,8 +200,7 @@ func (self *FrontEndHandler) Connector(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		self.clearCookie(w, r)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	osapiURL := session.Values["osapi_url"]

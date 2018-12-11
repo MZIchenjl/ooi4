@@ -12,8 +12,7 @@ type ServiceHandler struct{}
 func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	loginID := r.Form.Get("login_id")
@@ -34,16 +33,14 @@ func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {
 			"osapi_url": osapiURL,
 		})
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
 func (self *ServiceHandler) GetFlash(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 	loginID := r.Form.Get("login_id")
@@ -64,7 +61,6 @@ func (self *ServiceHandler) GetFlash(w http.ResponseWriter, r *http.Request) {
 			"flash_url": entryURL,
 		})
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
