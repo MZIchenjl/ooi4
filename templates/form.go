@@ -75,7 +75,7 @@ var Form = template.Must(template.New("Form").Parse(`<html lang="zh-Hans-CN">
       <p>本站采用了OOI系统，OOI (Online Objects Integration)是针对DMM网页游戏《艦隊これくしょん -艦これ-》的在线缓存系统。</p>
       <p>本站只支持DMM账号登录，不支持Facebook和Google账号登录。本网站不会保存任何用户信息，并对本网站服务可能造成的任何后果不负责任。</p>
       <p>本站的源代码已更新到OOI4，该项目代码采用BSD-3-Clause许可证开源，发布于 <a href="https://github.com/MZIchenjl/ooi4" target="_blank">此版本库</a>。</p>
-			<p><a href="https://github.com/acgx/ooi3/issues" target="_blank">汇报bug</a></p>
+			<p><a href="https://github.com/MZIchenjl/ooi4/issues" target="_blank">汇报bug</a></p>
     </div>
   </div>
   <div id="ooi-footer" class="uk-text-center">
