@@ -45,7 +45,7 @@ func main() {
 	r.Methods(http.MethodGet).Path("/logout").HandlerFunc(f2e.Logout)
 
 	r.Methods(http.MethodGet, http.MethodPost).Path("/kcsapi/{action:.+}").HandlerFunc(api.API)
-	r.Methods(http.MethodGet).Path("/kcs/resources/image/world/{server:.+}_{size:[lst]}.png").HandlerFunc(api.WorldImage)
+	r.Methods(http.MethodGet).Path("/kcs2/resources/world/{server:.+}_{size:[lst]}.png").HandlerFunc(api.WorldImage)
 
 	r.Methods(http.MethodPost).Path("/service/osapi").HandlerFunc(ser.GetOSAPI)
 	r.Methods(http.MethodPost).Path("/service/flash").HandlerFunc(ser.GetFlash)

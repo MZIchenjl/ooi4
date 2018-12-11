@@ -34,7 +34,9 @@ func (self *ProxyHandler) Proxy(w http.ResponseWriter, r *http.Request) {
 	}
 	defer res.Body.Close()
 	for key := range res.Header {
-		w.Header().Set(key, res.Header.Get(key))
+		if key != "Content-Length" {
+			w.Header().Set(key, res.Header.Get(key))
+		}
 	}
 	buf := make([]byte, chunkSize)
 	for {

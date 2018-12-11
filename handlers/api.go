@@ -20,6 +20,9 @@ type APIHandler struct {
 }
 
 func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
+	if self.worlds == nil {
+		self.worlds = make(map[string][]byte)
+	}
 	vars := mux.Vars(r)
 	size := vars["size"]
 	session, err := self.cookieStore.Get(r, self.cookieName)
@@ -28,15 +31,15 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
-	worldIP := session.Values["world_ip"].(string)
-	if worldIP != "" {
-		ipSections := strings.Split(worldIP, ".")
+	worldIP := session.Values["world_ip"]
+	if worldIP != nil {
+		ipSections := strings.Split(worldIP.(string), ".")
 		for i, v := range ipSections {
 			ipSections[i] = fmt.Sprintf("%03s", v)
 		}
 		imageName := fmt.Sprintf("%s_%s", strings.Join(ipSections, "_"), size)
 		if self.worlds[imageName] == nil {
-			u := fmt.Sprintf("http://203.104.209.102/kcs/resources/image/world/%s.png", imageName)
+			u := fmt.Sprintf("http://203.104.209.102/kcs2/resources/world/%s.png", imageName)
 			coro, err := http.Get(u)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
@@ -69,16 +72,16 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
 		return
 	}
-	worldIP := session.Values["WorldIP"].(string)
-	if worldIP != "" {
+	worldIP := session.Values["world_ip"]
+	if worldIP != nil {
 		referer := r.Referer()
-		referer = strings.Replace(referer, r.Host, worldIP, 1)
+		referer = strings.Replace(referer, r.Host, worldIP.(string), 1)
 		referer = strings.Replace(referer, "https://", "http://", 1)
 		u, err := url.Parse(fmt.Sprintf("http://%s/kcsapi/%s", worldIP, action))
 		req, err := http.NewRequest(r.Method, u.String(), r.Body)
 		req.Header = r.Header
 		req.Header.Set("User-Agent", auth.UserAgent)
-		req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, worldIP, 1))
+		req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, worldIP.(string), 1))
 		req.Header.Set("Referer", referer)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -88,7 +91,9 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 		}
 		defer res.Body.Close()
 		for key := range res.Header {
-			w.Header().Set(key, res.Header.Get(key))
+			if key != "Content-Length" {
+				w.Header().Set(key, res.Header.Get(key))
+			}
 		}
 		buf := make([]byte, chunkSize)
 		for {
