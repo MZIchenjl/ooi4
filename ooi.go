@@ -38,6 +38,7 @@ func main() {
 	r.Methods(http.MethodPost).Path("/").HandlerFunc(f2e.Login)
 	r.Methods(http.MethodGet).Path("/kancolle").HandlerFunc(f2e.Normal)
 	r.Methods(http.MethodGet).Path("/kcv").HandlerFunc(f2e.KCV)
+	r.Methods(http.MethodGet).Path("/flash").HandlerFunc(f2e.Flash)
 	r.Methods(http.MethodGet).Path("/poi").HandlerFunc(f2e.Poi)
 	r.Methods(http.MethodGet).Path("/connector").HandlerFunc(f2e.Connector)
 	r.Methods(http.MethodGet).Path("/logout").HandlerFunc(f2e.Logout)
