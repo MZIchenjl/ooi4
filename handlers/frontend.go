@@ -135,22 +135,6 @@ func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
-	sess := session.GetSession(r, self.CookieID, self.Secret)
-	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
-		templates.Flash.Execute(w, TmplParams{
-			Scheme:    r.URL.Scheme,
-			Host:      r.Host,
-			Token:     sess.APIToken,
-			StartTime: sess.APIStartTime,
-		})
-		return
-	} else {
-		clearCookie(w, self.CookieID)
-		http.Redirect(w, r, "/", http.StatusFound)
-	}
-}
-
 func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
 	sess := session.GetSession(r, self.CookieID, self.Secret)
 	if sess.APIStartTime != 0 && sess.APIToken != "" && sess.WorldIP != "" {
