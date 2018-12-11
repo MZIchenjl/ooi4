@@ -35,7 +35,7 @@ var Normal = template.Must(template.New("Normal").Parse(`<!DOCTYPE html>
   </div>
   <div id="ooi-footer" class="uk-text-center">
     <hr>
-    <address><a href="http://kancolle.tv" target="_blank">海平线镇守府</a> &copy; 2014-2016</address>
+    <address><a href="https://github.com/MZIchenjl" target="_blank">MZI</a> &copy; 2018</address>
   </div>
 </div>
 <div class="statistics">

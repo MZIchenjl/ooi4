@@ -74,14 +74,13 @@ var Form = template.Must(template.New("Form").Parse(`<html lang="zh-Hans-CN">
       <h2 class="uk-text-primary">提示</h2>
       <p>本站采用了OOI系统，OOI (Online Objects Integration)是针对DMM网页游戏《艦隊これくしょん -艦これ-》的在线缓存系统。</p>
       <p>本站只支持DMM账号登录，不支持Facebook和Google账号登录。本网站不会保存任何用户信息，并对本网站服务可能造成的任何后果不负责任。</p>
-      <p>本站的源代码已更新到OOI3，该项目代码采用AGPLv3许可证开源，发布于 <a href="https://github.com/acgx/ooi3" target="_blank">此版本库</a>。</p>
-      <p>如果希望资助我们的项目，可以通过<a href="http://bbs.kancolle.tv/thread-4812-1-1.html" target="_blank">购买赞助商产品</a>的方式支持我们。</p>
-      <p>OOI用户QQ群：337440297 | <a href="https://github.com/acgx/ooi3/issues" target="_blank">汇报bug</a></p>
+      <p>本站的源代码已更新到OOI4，该项目代码采用BSD-3-Clause许可证开源，发布于 <a href="https://github.com/MZIchenjl/ooi4" target="_blank">此版本库</a>。</p>
+			<p><a href="https://github.com/acgx/ooi3/issues" target="_blank">汇报bug</a></p>
     </div>
   </div>
   <div id="ooi-footer" class="uk-text-center">
     <hr>
-    <address><a href="http://kancolle.tv" target="_blank">海平线镇守府</a> &copy; 2014-2016</address>
+    <address><a href="https://github.com/MZIchenjl" target="_blank">MZI</a> &copy; 2018</address>
   </div>
 </div>
 <div class="statistics">
