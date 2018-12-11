@@ -11,3 +11,4 @@ app.toml
 #build
 ooi4
 debug
+build/

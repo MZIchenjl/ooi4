@@ -5,4 +5,9 @@ type baseHandler struct {
 	CookieID string
 }
 
+func (self *baseHandler) Init(secret, cookie string) {
+	self.Secret = secret
+	self.CookieID = cookie
+}
+
 const chunkSize = 1024

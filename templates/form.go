@@ -28,7 +28,7 @@ var Form = template.Must(template.New("Form").Parse(`<html lang="zh-Hans-CN">
   </div>
   <div id="ooi-content" class="uk-grid">
     <div id="ooi-form" class="uk-width-medium-2-5">
-      {{if .ErrMsg ne ""}}
+      {{if ne .ErrMsg ""}}
       <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
         <p class="uk-text-danger">{{.ErrMsg}}</p>
       </div>
@@ -49,19 +49,19 @@ var Form = template.Must(template.New("Form").Parse(`<html lang="zh-Hans-CN">
         <div class="uk-form-row">
           <span class="uk-form-label">游戏方式：</span>
           <p>
-            <input type="radio" id="mode1" name="mode" value="1"{{if .Mode eq 1}} checked{{end}}>
+            <input type="radio" id="mode1" name="mode" value="1"{{if eq .Mode 1}} checked{{end}}>
             <label for="mode1">在浏览器中运行</label>
           </p>
           <p>
-            <input type="radio" id="mode2" name="mode" value="2"{{if .Mode eq 2}} checked{{end}}>
+            <input type="radio" id="mode2" name="mode" value="2"{{if eq .Mode 2}} checked{{end}}>
             <label for="mode2">在KCV/74EO中运行</label>
           </p>
           <p>
-            <input type="radio" id="mode3" name="mode" value="3"{{if .Mode eq 3}} checked{{end}}>
+            <input type="radio" id="mode3" name="mode" value="3"{{if eq .Mode 3}} checked{{end}}>
             <label for="mode3">在poi中运行</label>
           </p>
           <p>
-            <input type="radio" id="mode4" name="mode" value="4"{{if .Mode eq 4}} checked{{end}}>
+            <input type="radio" id="mode4" name="mode" value="4"{{if eq .Mode 4}} checked{{end}}>
             <label for="mode4">登录器直连模式</label>
           </p>
         </div>

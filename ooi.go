@@ -28,14 +28,9 @@ func main() {
 	f2e := &handlers.FrontEndHandler{}
 	ser := &handlers.ServiceHandler{}
 
-	api.Secret = appConfig.Secret
-	api.CookieID = appConfig.Cookie
-
-	f2e.Secret = appConfig.Secret
-	f2e.CookieID = appConfig.Cookie
-
-	ser.Secret = appConfig.Secret
-	ser.CookieID = appConfig.Cookie
+	api.Init(appConfig.Secret, appConfig.Cookie)
+	f2e.Init(appConfig.Secret, appConfig.Cookie)
+	ser.Init(appConfig.Secret, appConfig.Cookie)
 
 	r := mux.NewRouter()
 
@@ -62,13 +57,9 @@ func main() {
 	}
 
 	go func() {
-		log.Printf("OOI serving on http://127.0.0.1:%d\n", appConfig.Port)
+		log.Printf("OOI serving on http://localhost:%d\n", appConfig.Port)
 		if err := srv.ListenAndServe(); err != nil {
-			log.Println(err)
-			ctx, cancel := context.WithTimeout(context.Background(), wait)
-			srv.Shutdown(ctx)
-			cancel()
-			os.Exit(1)
+			log.Fatalln(err)
 		}
 	}()
 
