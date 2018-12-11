@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"github.com/MZIchenjl/ooi4/auth"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/MZIchenjl/ooi4/auth"
 )
 
 type ProxyHandler struct {
@@ -22,7 +23,7 @@ func (self *ProxyHandler) Proxy(w http.ResponseWriter, r *http.Request) {
 	referer = strings.Replace(referer, r.Host, host, 1)
 	referer = strings.Replace(referer, "https://", "http://", 1)
 	req.Header = r.Header
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko")
+	req.Header.Set("User-Agent", auth.UserAgent)
 	req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, host, 1))
 	req.Header.Set("Referer", referer)
 	res, err := http.DefaultClient.Do(req)
@@ -32,10 +33,9 @@ func (self *ProxyHandler) Proxy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer res.Body.Close()
-	w.Header().Set("Date", res.Header.Get("Date"))
-	w.Header().Set("Connection", res.Header.Get("Connection"))
-	w.Header().Set("Content-Type", res.Header.Get("Content-Type"))
-	w.Header().Set("Content-Encoding", res.Header.Get("Content-Encoding"))
+	for key := range res.Header {
+		w.Header().Set(key, res.Header.Get(key))
+	}
 	buf := make([]byte, chunkSize)
 	for {
 		n, err := res.Body.Read(buf)

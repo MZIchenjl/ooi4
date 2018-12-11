@@ -1,13 +1,16 @@
 package handlers
 
+import "github.com/gorilla/sessions"
+
 type baseHandler struct {
-	Secret   string
-	CookieID string
+	cookieName  string
+	cookieStore *sessions.CookieStore
 }
 
 func (self *baseHandler) Init(secret, cookie string) {
-	self.Secret = secret
-	self.CookieID = cookie
+	self.cookieName = cookie
+	self.cookieStore = sessions.NewCookieStore([]byte(secret))
+	self.cookieStore.Options.MaxAge = 0
 }
 
 const chunkSize = 1024

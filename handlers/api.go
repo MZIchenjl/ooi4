@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/MZIchenjl/ooi4/session"
+	"github.com/MZIchenjl/ooi4/auth"
 	"github.com/gorilla/mux"
 )
 
@@ -22,9 +22,15 @@ type APIHandler struct {
 func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	size := vars["size"]
-	sess := session.GetSession(r, self.CookieID, self.Secret)
-	if sess.WorldIP != "" {
-		ipSections := strings.Split(sess.WorldIP, ".")
+	session, err := self.cookieStore.Get(r, self.cookieName)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		return
+	}
+	worldIP := session.Values["world_ip"].(string)
+	if worldIP != "" {
+		ipSections := strings.Split(worldIP, ".")
 		for i, v := range ipSections {
 			ipSections[i] = fmt.Sprintf("%03s", v)
 		}
@@ -57,16 +63,22 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	action := vars["action"]
-	sess := session.GetSession(r, self.CookieID, self.Secret)
-	if sess.WorldIP != "" {
+	session, err := self.cookieStore.Get(r, self.cookieName)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		return
+	}
+	worldIP := session.Values["WorldIP"].(string)
+	if worldIP != "" {
 		referer := r.Referer()
-		referer = strings.Replace(referer, r.Host, sess.WorldIP, 1)
+		referer = strings.Replace(referer, r.Host, worldIP, 1)
 		referer = strings.Replace(referer, "https://", "http://", 1)
-		u, err := url.Parse(fmt.Sprintf("http://%s/kcsapi/%s", sess.WorldIP, action))
+		u, err := url.Parse(fmt.Sprintf("http://%s/kcsapi/%s", worldIP, action))
 		req, err := http.NewRequest(r.Method, u.String(), r.Body)
 		req.Header = r.Header
-		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko")
-		req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, sess.WorldIP, 1))
+		req.Header.Set("User-Agent", auth.UserAgent)
+		req.Header.Set("Origin", strings.Replace(r.Header.Get("Origin"), r.Host, worldIP, 1))
 		req.Header.Set("Referer", referer)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -75,10 +87,9 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer res.Body.Close()
-		w.Header().Set("Date", res.Header.Get("Date"))
-		w.Header().Set("Connection", res.Header.Get("Connection"))
-		w.Header().Set("Content-Type", res.Header.Get("Content-Type"))
-		w.Header().Set("Content-Encoding", res.Header.Get("Content-Encoding"))
+		for key := range res.Header {
+			w.Header().Set(key, res.Header.Get(key))
+		}
 		buf := make([]byte, chunkSize)
 		for {
 			n, err := res.Body.Read(buf)

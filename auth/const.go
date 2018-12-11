@@ -36,7 +36,7 @@ var urlLayouts = map[string]string{
 	"entry":        "http://%s/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token=%s&api_starttime=%d",
 }
 
-const userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"
+const UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"
 
 var patterns = map[string]*regexp.Regexp{
 	"dmm_token": regexp.MustCompile(`http-dmm-token" content="([\d|\w]+)"`),

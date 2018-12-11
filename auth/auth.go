@@ -51,7 +51,7 @@ func New(id, pass string) *KancolleAuth {
 
 func (self *KancolleAuth) getDMMTokens() error {
 	req, _ := http.NewRequest(http.MethodGet, urlLayouts["login"], nil)
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", UserAgent)
 	res, err := self.Do(req)
 	if err != nil {
 		return errors.New("连接DMM登录页失败")
@@ -94,7 +94,7 @@ func (self *KancolleAuth) getAjaxToken() error {
 		"token": self.token,
 	})
 	req, _ := http.NewRequest(http.MethodPost, urlLayouts["ajax"], bytes.NewReader(data))
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", UserAgent)
 	req.Header.Set("Referer", urlLayouts["login"])
 	req.Header.Set("http-dmm-token", self.dmmToken)
 	req.Header.Set("Content-Type", "application/json")
@@ -130,7 +130,7 @@ func (self *KancolleAuth) getOSAPIURL() error {
 	data.Set("idKey", self.loginID)
 	data.Set("pwKey", self.password)
 	req, _ := http.NewRequest(http.MethodPost, urlLayouts["auth"], strings.NewReader(data.Encode()))
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", UserAgent)
 	req.Header.Set("Referer", urlLayouts["login"])
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Origin", "https://accounts.dmm.com")
@@ -152,7 +152,7 @@ func (self *KancolleAuth) getOSAPIURL() error {
 		}
 	}
 	req, _ = http.NewRequest(http.MethodGet, urlLayouts["game"], nil)
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", UserAgent)
 	req.Header.Set("Referer", urlLayouts["login"])
 	req.Header.Set("Origin", "https://accounts.dmm.com")
 	resp, err := self.Do(req)
@@ -193,7 +193,7 @@ func (self *KancolleAuth) getWorld() error {
 	self.st = q.Get("st")
 	u := fmt.Sprintf(urlLayouts["get_world"], self.owner, time.Now().UnixNano()/1e6)
 	req, _ := http.NewRequest(http.MethodGet, u, nil)
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", UserAgent)
 	req.Header.Set("Referer", self.osapiURL)
 	req.Header.Set("Origin", "https://accounts.dmm.com")
 	res, err := self.Do(req)
@@ -242,7 +242,7 @@ func (self *KancolleAuth) getAPIToken() error {
 	data.Set("gadget", "http://203.104.209.7/gadget.xml")
 	data.Set("container", "dmm")
 	req, _ := http.NewRequest(http.MethodPost, urlLayouts["make_request"], strings.NewReader(data.Encode()))
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", UserAgent)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := self.Do(req)
 	if err != nil {
