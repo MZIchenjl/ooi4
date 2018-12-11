@@ -275,7 +275,7 @@ func (self *KancolleAuth) getAPIToken() error {
 	}
 	self.APIToken = svdata.APIToken
 	self.APIStartTime = svdata.APIStarttime
-	self.entry = fmt.Sprintf(urlLayouts["entry"], self.WorldIP, self.APIStartTime, self.APIStartTime)
+	self.entry = fmt.Sprintf(urlLayouts["entry"], self.WorldIP, self.APIToken, self.APIStartTime)
 	return nil
 }
 
