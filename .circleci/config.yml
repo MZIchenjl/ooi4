@@ -27,10 +27,4 @@ jobs:
                   command: GOOS=windows go build -o build/ooi4-windows.exe
                   
             - store_artifacts:
-                  path: ./build/ooi4-linux
-                  
-            - store_artifacts:
-                  path: ./build/ooi4-darwin
-                  
-            - store_artifacts:
-                  path: ./build/ooi4-windows.exe
+                  path: ./build
