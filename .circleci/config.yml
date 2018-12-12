@@ -3,9 +3,7 @@ jobs:
     build:
         
         docker:
-            - image: circleci/golang:1.11.1
-              
-        parallelism: 1
+            - image: circleci/golang:1.11.2
         
         steps:
             - checkout
