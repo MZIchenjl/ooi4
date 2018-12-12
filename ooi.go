@@ -19,11 +19,11 @@ import (
 const wait = time.Second * 15
 
 func main() {
-	confile := *flag.String("config", "app.toml", "Set the config file(toml)")
+	confile := flag.String("config", "app.toml", "Set the config file(toml)")
 	flag.Parse()
 
 	appConfig := new(conf.Config)
-	_, err := toml.DecodeFile(confile, appConfig)
+	_, err := toml.DecodeFile(*confile, appConfig)
 	if err != nil {
 		log.Fatalln(err)
 	}
