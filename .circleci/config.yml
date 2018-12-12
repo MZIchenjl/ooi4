@@ -8,6 +8,7 @@ jobs:
         parallelism: 4
         
         steps:
+            - checkout
             
             - run:
                   name: Make Build Dir
