@@ -68,7 +68,7 @@ func main() {
 	}
 
 	go func() {
-		log.Printf("OOI serving on http://localhost:%d\n", appConfig.Port)
+		log.Printf("ooi serving on http://localhost:%d\n", appConfig.Port)
 		if err := srv.ListenAndServe(); err != nil {
 			log.Fatalln(err)
 		}
@@ -85,6 +85,6 @@ func main() {
 
 	srv.Shutdown(ctx)
 
-	log.Println("OOI is shutting down")
+	log.Println("ooi is shutting down")
 	os.Exit(0)
 }
