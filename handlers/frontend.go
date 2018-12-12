@@ -183,7 +183,7 @@ func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
 	apiStartTime := session.Values["api_starttime"]
 	apiToken := session.Values["api_token"]
 	worldIP := session.Values["world_ip"]
-	if apiStartTime != 0 && apiToken != "" && worldIP != "" {
+	if apiStartTime != nil && apiToken != nil && worldIP != nil {
 		templates.Poi.Execute(w, TmplParams{
 			Host:      r.Host,
 			Token:     apiToken.(string),
