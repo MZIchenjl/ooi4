@@ -20,8 +20,6 @@ var Poi = template.Must(template.New("Poi").Parse(`<!DOCTYPE html>
       overflow: hidden;
     }
     #externalswf {
-      width: 800px;
-      height: 480px;
     }
   </style>
 </head>
