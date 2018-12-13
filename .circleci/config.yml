@@ -1,19 +1,19 @@
 version: 2.1
 jobs:
     build:
-        
+
         docker:
             - image: circleci/golang:1.11.2
-        
+
         steps:
             - checkout
-            
+
             - run:
                   name: Make Build And Dist Dir
                   command: |
                       mkdir dist
                       mkdir build
-            
+
             - run:
                   name: Linux
                   command: |
@@ -45,6 +45,6 @@ jobs:
                       zip -v -r ../dist/ooi4-linux.zip linux
                       zip -v -r ../dist/ooi4-darwin.zip darwin
                       zip -v -r ../dist/ooi4-windows.zip windows
-                  
+
             - store_artifacts:
                   path: ./dist
