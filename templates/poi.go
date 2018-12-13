@@ -32,8 +32,6 @@ var Poi = template.Must(template.New("Poi").Parse(`<!DOCTYPE html>
 <script>
   $(function() {
     var swf = $("#externalswf");
-    swf.css("width", "100%");
-    swf.css("height", "100%");
     swf.css("position", "absolute");
     swf.css("margin", "0");
   });
