@@ -37,7 +37,7 @@ jobs:
                       cp -r static build/windows
                       cp app.1.toml build/windows/app.toml
                       GOOS=windows go build -o build/windows/ooi4.exe
-                      
+
             - run:
                   name: Package
                   command: |
