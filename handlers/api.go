@@ -34,11 +34,6 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer coro.Body.Close()
-		if err != nil {
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
-		}
-		defer coro.Body.Close()
 		for key := range coro.Header {
 			if !isExluded(key) {
 				w.Header().Set(key, coro.Header.Get(key))
@@ -50,10 +45,10 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 			if err != nil && err != io.EOF {
 				return
 			}
-			w.Write(buf[:n])
-			if err == io.EOF {
+			if 0 == n || err == io.EOF {
 				break
 			}
+			w.Write(buf[:n])
 		}
 	} else {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -97,10 +92,10 @@ func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
 			if err != nil && err != io.EOF {
 				return
 			}
-			w.Write(buf[:n])
-			if err == io.EOF {
+			if 0 == n || err == io.EOF {
 				break
 			}
+			w.Write(buf[:n])
 		}
 	} else {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)

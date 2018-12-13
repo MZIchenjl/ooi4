@@ -40,9 +40,9 @@ func (self *ProxyHandler) Proxy(w http.ResponseWriter, r *http.Request) {
 		if err != nil && err != io.EOF {
 			return
 		}
-		w.Write(buf[:n])
-		if err == io.EOF {
+		if 0 == n || err == io.EOF {
 			break
 		}
+		w.Write(buf[:n])
 	}
 }
