@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
     build:
         
@@ -9,20 +9,42 @@ jobs:
             - checkout
             
             - run:
-                  name: Make Build Dir
-                  command: mkdir build
+                  name: Make Build And Dist Dir
+                  command: |
+                      mkdir dist
+                      mkdir build
             
             - run:
                   name: Linux
-                  command: GOOS=linux go build -o build/ooi4-linux
-                  
+                  command: |
+                      mkdir build/linux
+                      cp -r static build/linux
+                      cp app.1.toml build/linux/app.toml
+                      GOOS=linux go build -o build/linux/ooi4
+
             - run:
                   name: Darwin
-                  command: GOOS=darwin go build -o build/ooi4-darwin
+                  command: |
+                      mkdir build/darwin
+                      cp -r static build/darwin
+                      cp app.1.toml build/darwin/app.toml
+                      GOOS=darwin go build -o build/darwin/ooi4
 
             - run:
                   name: Windows
-                  command: GOOS=windows go build -o build/ooi4-windows.exe
+                  command: |
+                      mkdir build/windows
+                      cp -r static build/windows
+                      cp app.1.toml build/windows/app.toml
+                      GOOS=windows go build -o build/windows/ooi4.exe
+                      
+            - run:
+                  name: Package
+                  command: |
+                      cd build
+                      zip -v -r ../dist/ooi4-linux.zip linux
+                      zip -v -r ../dist/ooi4-darwin.zip darwin
+                      zip -v -r ../dist/ooi4-windows.zip windows
                   
             - store_artifacts:
-                  path: ./build
+                  path: ./dist

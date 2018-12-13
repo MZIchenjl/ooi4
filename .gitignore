@@ -12,3 +12,4 @@ app.toml
 ooi4
 debug
 build/
+dist/
