@@ -10,9 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type APIHandler struct{}
-
-func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
+func WorldImage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	size := vars["size"]
 	session, err := cookieStore.Get(r, cookieName)
@@ -55,7 +53,7 @@ func (self *APIHandler) WorldImage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *APIHandler) API(w http.ResponseWriter, r *http.Request) {
+func API(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)

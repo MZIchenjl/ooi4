@@ -7,9 +7,7 @@ import (
 	"github.com/MZIchenjl/ooi4/auth"
 )
 
-type ServiceHandler struct{}
-
-func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {
+func GetOSAPI(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -37,7 +35,7 @@ func (self *ServiceHandler) GetOSAPI(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *ServiceHandler) GetFlash(w http.ResponseWriter, r *http.Request) {
+func GetFlash(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)

@@ -8,9 +8,7 @@ import (
 	"github.com/MZIchenjl/ooi4/auth"
 )
 
-type ProxyHandler struct{}
-
-func (self *ProxyHandler) Proxy(w http.ResponseWriter, r *http.Request) {
+func Proxy(w http.ResponseWriter, r *http.Request) {
 	host := auth.WorldIPList[0]
 	u := *r.URL
 	u.Scheme = "http"

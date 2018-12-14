@@ -9,8 +9,6 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-type FrontEndHandler struct{}
-
 type TmplParams struct {
 	Mode      int
 	StartTime int64
@@ -20,15 +18,15 @@ type TmplParams struct {
 	Token     string
 }
 
-func (self *FrontEndHandler) clearCookie(w http.ResponseWriter, r *http.Request) {
+func clearCookie(w http.ResponseWriter, r *http.Request) {
 	session := sessions.NewSession(cookieStore, cookieName)
 	session.Save(r, w)
 }
 
-func (self *FrontEndHandler) Form(w http.ResponseWriter, r *http.Request) {
+func Form(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -41,7 +39,7 @@ func (self *FrontEndHandler) Form(w http.ResponseWriter, r *http.Request) {
 	templates.Form.Execute(w, TmplParams{Mode: mode.(int)})
 }
 
-func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -49,7 +47,7 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -108,10 +106,10 @@ func (self *FrontEndHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
+func Normal(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -126,15 +124,15 @@ func (self *FrontEndHandler) Normal(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	} else {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
-func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
+func Flash(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -149,15 +147,15 @@ func (self *FrontEndHandler) Flash(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	} else {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
-func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
+func KCV(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -168,15 +166,15 @@ func (self *FrontEndHandler) KCV(w http.ResponseWriter, r *http.Request) {
 		templates.KCV.Execute(w, nil)
 		return
 	} else {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
-func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
+func Poi(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -191,15 +189,15 @@ func (self *FrontEndHandler) Poi(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	} else {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
 
-func (self *FrontEndHandler) Connector(w http.ResponseWriter, r *http.Request) {
+func Connector(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, cookieName)
 	if err != nil {
-		self.clearCookie(w, r)
+		clearCookie(w, r)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -215,7 +213,7 @@ func (self *FrontEndHandler) Connector(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *FrontEndHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	self.clearCookie(w, r)
+func Logout(w http.ResponseWriter, r *http.Request) {
+	clearCookie(w, r)
 	http.Redirect(w, r, "/", http.StatusFound)
 }

@@ -30,32 +30,27 @@ func main() {
 
 	handlers.Init(appConfig.Secret, appConfig.Cookie)
 
-	api := &handlers.APIHandler{}
-	f2e := &handlers.FrontEndHandler{}
-	ser := &handlers.ServiceHandler{}
-	pro := &handlers.ProxyHandler{}
-
 	r := mux.NewRouter()
 
-	r.Methods(http.MethodGet).Path("/").HandlerFunc(f2e.Form)
-	r.Methods(http.MethodPost).Path("/").HandlerFunc(f2e.Login)
-	r.Methods(http.MethodGet).Path("/kancolle").HandlerFunc(f2e.Normal)
-	r.Methods(http.MethodGet).Path("/kcv").HandlerFunc(f2e.KCV)
-	r.Methods(http.MethodGet).Path("/flash").HandlerFunc(f2e.Flash)
-	r.Methods(http.MethodGet).Path("/poi").HandlerFunc(f2e.Poi)
-	r.Methods(http.MethodGet).Path("/connector").HandlerFunc(f2e.Connector)
-	r.Methods(http.MethodGet).Path("/logout").HandlerFunc(f2e.Logout)
+	r.Methods(http.MethodGet).Path("/").HandlerFunc(handlers.Form)
+	r.Methods(http.MethodPost).Path("/").HandlerFunc(handlers.Login)
+	r.Methods(http.MethodGet).Path("/kancolle").HandlerFunc(handlers.Normal)
+	r.Methods(http.MethodGet).Path("/kcv").HandlerFunc(handlers.KCV)
+	r.Methods(http.MethodGet).Path("/flash").HandlerFunc(handlers.Flash)
+	r.Methods(http.MethodGet).Path("/poi").HandlerFunc(handlers.Poi)
+	r.Methods(http.MethodGet).Path("/connector").HandlerFunc(handlers.Connector)
+	r.Methods(http.MethodGet).Path("/logout").HandlerFunc(handlers.Logout)
 
-	r.Methods(http.MethodGet, http.MethodPost).Path("/kcsapi/{action:.+}").HandlerFunc(api.API)
-	r.Methods(http.MethodGet).Path("/kcs2/resources/world/{server:.+}_{size:[lst]}.png").HandlerFunc(api.WorldImage)
+	r.Methods(http.MethodGet, http.MethodPost).Path("/kcsapi/{action:.+}").HandlerFunc(handlers.API)
+	r.Methods(http.MethodGet).Path("/kcs2/resources/world/{server:.+}_{size:[lst]}.png").HandlerFunc(handlers.WorldImage)
 
-	r.Methods(http.MethodPost).Path("/service/osapi").HandlerFunc(ser.GetOSAPI)
-	r.Methods(http.MethodPost).Path("/service/flash").HandlerFunc(ser.GetFlash)
+	r.Methods(http.MethodPost).Path("/service/osapi").HandlerFunc(handlers.GetOSAPI)
+	r.Methods(http.MethodPost).Path("/service/flash").HandlerFunc(handlers.GetFlash)
 
-	r.Methods(http.MethodGet).PathPrefix("/kcs").HandlerFunc(pro.Proxy)
-	r.Methods(http.MethodGet).PathPrefix("/_kcs").HandlerFunc(pro.Proxy)
-	r.Methods(http.MethodGet).PathPrefix("/kcs2").HandlerFunc(pro.Proxy)
-	r.Methods(http.MethodGet).PathPrefix("/_kcs2").HandlerFunc(pro.Proxy)
+	r.Methods(http.MethodGet).PathPrefix("/kcs").HandlerFunc(handlers.Proxy)
+	r.Methods(http.MethodGet).PathPrefix("/_kcs").HandlerFunc(handlers.Proxy)
+	r.Methods(http.MethodGet).PathPrefix("/kcs2").HandlerFunc(handlers.Proxy)
+	r.Methods(http.MethodGet).PathPrefix("/_kcs2").HandlerFunc(handlers.Proxy)
 
 	r.Methods(http.MethodGet).PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
