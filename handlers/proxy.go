@@ -38,7 +38,7 @@ func Proxy(w http.ResponseWriter, r *http.Request) {
 		if err != nil && err != io.EOF {
 			return
 		}
-		if 0 == n || err == io.EOF {
+		if 0 == n {
 			break
 		}
 		w.Write(buf[:n])
