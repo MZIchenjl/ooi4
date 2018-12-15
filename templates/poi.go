@@ -25,7 +25,7 @@ var Poi = template.Must(template.New("Poi").Parse(`<!DOCTYPE html>
 </head>
 <body>
 <div id="flashWrap">
-  <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="//{{.Host}}/kcs2/"  src="//{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&api_starttime={{.StartTime}}" style="display: block !important;"></embed>
+  <embed id="externalswf" width="1280" height="800" wmode="opaque" quality="high" bgcolor="#000000" allowscriptaccess="always" base="http://{{.Host}}/kcs2/"  src="http://{{.Host}}/kcs2/index.php?api_root=/kcsapi&voice_root=/kcs/sound&osapi_root=osapi.dmm.com&version=4.0.0.0&api_token={{.Token}}&api_starttime={{.StartTime}}" style="display: block !important;"></embed>
 </div>
 <script>
   $(function() {
