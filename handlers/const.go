@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"github.com/gorilla/sessions"
-	"net/http"
 )
 
 var cookieName string
@@ -21,8 +20,6 @@ func Init(secret, cookie string) {
 	cookieStore = sessions.NewCookieStore([]byte(secret))
 	cookieStore.Options.MaxAge = 0
 	cookieStore.Options.HttpOnly = true
-
-	http.DefaultClient.Transport = &http.Transport{Proxy: http.ProxyFromEnvironment}
 }
 
 const chunkSize = 1024

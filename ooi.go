@@ -16,9 +16,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const wait = time.Second * 15
+const waitTime = time.Second * 15
 
 func main() {
+	// Read the config
 	confile := flag.String("config", "app.toml", "Set the config file(toml)")
 	flag.Parse()
 
@@ -27,9 +28,13 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	// Set the http.DefaultClient's proxy
+	http.DefaultClient.Transport = &http.Transport{Proxy: http.ProxyFromEnvironment}
 
+	// Init all handlers
 	handlers.Init(appConfig.Secret, appConfig.Cookie)
 
+	// Register routers
 	r := mux.NewRouter()
 
 	r.Methods(http.MethodGet).Path("/").HandlerFunc(handlers.Form)
@@ -54,6 +59,7 @@ func main() {
 
 	r.Methods(http.MethodGet).PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	// Create the server
 	srv := &http.Server{
 		Addr:         fmt.Sprintf("0.0.0.0:%d", appConfig.Port),
 		WriteTimeout: time.Second * 15,
@@ -62,24 +68,29 @@ func main() {
 		Handler:      r,
 	}
 
+	// Start the server by using a go routine
 	go func() {
 		log.Printf("ooi serving on http://localhost:%d\n", appConfig.Port)
 		if err := srv.ListenAndServe(); err != nil {
+			// If the server can't start up, exit with code 1
 			log.Fatalln(err)
 		}
 	}()
 
 	c := make(chan os.Signal, 1)
 
-	signal.Notify(c, os.Interrupt)
+	// Wait for the system's Interrupt/Kill signal
+	signal.Notify(c, os.Interrupt, os.Kill)
 
 	<-c
 
-	ctx, cancel := context.WithTimeout(context.Background(), wait)
+	ctx, cancel := context.WithTimeout(context.Background(), waitTime)
 	defer cancel()
-
+	// Close the server and the context
 	srv.Shutdown(ctx)
 
 	log.Println("ooi is shutting down")
+
+	// Exit the program with code 0
 	os.Exit(0)
 }
