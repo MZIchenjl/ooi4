@@ -17,7 +17,7 @@ func GetOSAPI(w http.ResponseWriter, r *http.Request) {
 	password := r.Form.Get("password")
 	if loginID != "" && password != "" {
 		kancolle := auth.New(loginID, password)
-		w.Header().Set("Content-Type", "application/json'")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		err, osapiURL := kancolle.GetOSAPI()
 		if err != nil {
 			json.NewEncoder(w).Encode(map[string]interface{}{
@@ -45,7 +45,7 @@ func GetFlash(w http.ResponseWriter, r *http.Request) {
 	password := r.Form.Get("password")
 	if loginID != "" && password != "" {
 		kancolle := auth.New(loginID, password)
-		w.Header().Set("Content-Type", "application/json'")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		err, entryURL := kancolle.GetEntry()
 		if err != nil {
 			json.NewEncoder(w).Encode(map[string]interface{}{
