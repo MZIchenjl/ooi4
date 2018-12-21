@@ -1,3 +1,0 @@
-port = 8080
-cookie = "cookiID"
-secret = "You Must Set A Secret Key!"
