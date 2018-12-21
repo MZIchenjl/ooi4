@@ -19,7 +19,7 @@ jobs:
                   command: |
                       mkdir build/linux
                       cp -r static build/linux
-                      cp app.1.toml build/linux/app.toml
+                      cp app.example.toml build/linux/app.toml
                       GOOS=linux go build -o build/linux/ooi4
                       openssl sha256 build/linux/ooi4 > build/linux/shasum.txt
 
@@ -28,7 +28,7 @@ jobs:
                   command: |
                       mkdir build/darwin
                       cp -r static build/darwin
-                      cp app.1.toml build/darwin/app.toml
+                      cp app.example.toml build/darwin/app.toml
                       GOOS=darwin go build -o build/darwin/ooi4
                       openssl sha256 build/darwin/ooi4 > build/darwin/shasum.txt
 
@@ -37,7 +37,7 @@ jobs:
                   command: |
                       mkdir build/windows
                       cp -r static build/windows
-                      cp app.1.toml build/windows/app.toml
+                      cp app.example.toml build/windows/app.toml
                       GOOS=windows go build -o build/windows/ooi4.exe
                       openssl sha256 build/windows/ooi4.exe > build/windows/shasum.txt
 
