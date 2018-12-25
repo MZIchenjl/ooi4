@@ -18,6 +18,7 @@ func Init(secret, cookie string) {
 	cookieName = cookie
 
 	cookieStore = sessions.NewCookieStore([]byte(secret))
+	cookieStore.Options.Path = "/"
 	cookieStore.Options.MaxAge = 0
 	cookieStore.Options.HttpOnly = true
 }

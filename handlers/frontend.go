@@ -20,6 +20,9 @@ type TmplParams struct {
 
 func clearCookie(w http.ResponseWriter, r *http.Request) {
 	session := sessions.NewSession(cookieStore, cookieName)
+	session.Options.Path = "/"
+	session.Options.MaxAge = 0
+	session.Options.HttpOnly = true
 	session.Save(r, w)
 }
 
