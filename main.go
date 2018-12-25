@@ -72,7 +72,6 @@ func main() {
 	go func() {
 		log.Printf("ooi serving on http://localhost:%d\n", appConfig.Port)
 		if err := srv.ListenAndServe(); err != nil {
-			// If the server can't start up, exit with code 1
 			log.Println(err)
 		}
 	}()
