@@ -37,6 +37,10 @@ func main() {
 	// Register routers
 	r := mux.NewRouter()
 
+	r.MethodNotAllowedHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	})
+
 	r.Methods(http.MethodGet).Path("/").HandlerFunc(handlers.Form)
 	r.Methods(http.MethodPost).Path("/").HandlerFunc(handlers.Login)
 	r.Methods(http.MethodGet).Path("/kancolle").HandlerFunc(handlers.Normal)
